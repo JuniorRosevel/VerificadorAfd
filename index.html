@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Validador de AFD - Portaria 671</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    textarea { width: 100%; height: 200px; margin-top: 10px; }
+    .error { color: red; margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h2>Validador de Arquivo AFD - Portaria 671</h2>
+
+  <input type="file" id="fileInput" accept=".txt">
+  <button onclick="validarAFD()">Validar Arquivo</button>
+
+  <h3>Resultado:</h3>
+  <div id="resultado"></div>
+
+  <script>
+    let linhas = [];
+
+    document.getElementById("fileInput").addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        linhas = event.target.result.split(/\r?\n/).filter(l => l.trim() !== '');
+        document.getElementById("resultado").innerHTML = "<p>Arquivo carregado com " + linhas.length + " linhas.</p>";
+      };
+      reader.readAsText(file);
+    });
+
+    function validarAFD() {
+      const resultado = document.getElementById("resultado");
+      resultado.innerHTML = "";
+
+      if (linhas.length === 0) {
+        resultado.innerHTML = "<p class='error'>Nenhum arquivo carregado.</p>";
+        return;
+      }
+
+      let erros = [];
+      let nsrAnterior = -1;
+
+      for (let i = 0; i < linhas.length; i++) {
+        const linha = linhas[i];
+        const linhaNum = i + 1;
+
+        // NSR = primeiros 9 dígitos
+        const nsr = parseInt(linha.substring(0, 9), 10);
+        if (isNaN(nsr)) {
+          erros.push(`Linha ${linhaNum}: NSR inválido`);
+        } else {
+          if (nsrAnterior >= 0 && nsr !== nsrAnterior + 1) {
+            erros.push(`Linha ${linhaNum}: NSR fora de sequência (esperado ${nsrAnterior + 1}, encontrado ${nsr})`);
+          }
+          nsrAnterior = nsr;
+        }
+
+        // Validação de comprimento da linha (mínimo esperado: 30, pode ser ajustado)
+        if (linha.length < 30) {
+          erros.push(`Linha ${linhaNum}: comprimento inválido (${linha.length} caracteres)`);
+        }
+      }
+
+      if (erros.length === 0) {
+        resultado.innerHTML = "<p style='color:green;'>Arquivo AFD válido. Nenhum erro encontrado.</p>";
+      } else {
+        resultado.innerHTML = "<h4>Erros encontrados:</h4>" + erros.map(e => `<div class='error'>${e}</div>`).join("");
+      }
+    }
+  </script>
+</body>
+</html>
