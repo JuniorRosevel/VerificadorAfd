@@ -4,17 +4,31 @@
   <meta charset="UTF-8">
   <title>Validador de AFD - Portaria 671</title>
   <style>
-  body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-image: url('—Pngtree—blue carbon background with sport_1200848.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    color: white;
-    text-shadow: 1px 1px 3px black;
-  }
-</style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-image: url('fundo.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      color: white;
+      text-shadow: 1px 1px 3px black;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      margin-top: 10px;
+    }
+    input, button {
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 1rem;
+    }
+    .error {
+      color: #ff7373;
+      margin: 5px 0;
+    }
+  </style>
 </head>
 <body>
   <h2>Validador de Arquivo AFD - Portaria 671</h2>
@@ -65,14 +79,13 @@
           nsrAnterior = nsr;
         }
 
-        // Validação de comprimento da linha (mínimo esperado: 30, pode ser ajustado)
         if (linha.length < 30) {
           erros.push(`Linha ${linhaNum}: comprimento inválido (${linha.length} caracteres)`);
         }
       }
 
       if (erros.length === 0) {
-        resultado.innerHTML = "<p style='color:green;'>Arquivo AFD válido. Nenhum erro encontrado.</p>";
+        resultado.innerHTML = "<p style='color:lightgreen;'>Arquivo AFD válido. Nenhum erro encontrado.</p>";
       } else {
         resultado.innerHTML = "<h4>Erros encontrados:</h4>" + erros.map(e => `<div class='error'>${e}</div>`).join("");
       }
